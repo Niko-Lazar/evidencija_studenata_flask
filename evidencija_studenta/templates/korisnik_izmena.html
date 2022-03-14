@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Studentska evidencija</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('studenti') }}">Studenti <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('predmeti') }}">Predmeti</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('korisnici') }}" tabindex="-1" aria-disabled="true">Korisnici</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </form>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row justify-content-start">
+                <div class="col-lg-6 cl-xs-12">
+                    <form action={{ url_for('korisnik_izmena', id=korisnik.id) }} method="POST">
+                        <legend class="mt-5 mb-5">Izmena korisnika</legend>
+                        <div class="form-group">
+                            <label for="ime">Ime</label>
+                            <input type="text" id="korisnik_ime" class="form-control" id="ime" name="ime" value={{ korisnik.ime }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prezime">Prezime</label>
+                            <input type="text" id="korisnik_prezime" class="form-control" id="prezime" name="prezime" value={{ korisnik.prezime }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="korisnik_email" class="form-control" name="email" value={{ korisnik.email }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rola">Rola</label>
+                            <select id="rola" name="rola" class="form-control">
+                                <option value="" {% if korisnik.rola == "" %} selected {% endif %}>--Izaberite rolu--</option>
+                                <option value="administrator" {% if korisnik.rola == "administrator" %} selected {% endif %}>Administrator</option>
+                                <option value="profesor" {% if korisnik.rola == "profesor" %} selected {% endif %}>Profesor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lozinka">Lozinka</label>
+                            <input type="password" id="" class="form-control" value={{ korisnik.lozinka }} name="lozinka" required>
+                        </div>
+                        <input type="submit" class="btn btn-primary" role="button" value="Sacuvaj">
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

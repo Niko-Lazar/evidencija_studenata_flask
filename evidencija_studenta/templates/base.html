@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/bootstrap-4.5.3-dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/fontawesome-free-5.15.4-web/css/all.min.css">
+        <link rel="stylesheet" href="/static/css/style.css">
+        <title>Evidencija studenata</title>
+    </head>
+    <body>
+        
+        {% block content %}
+        {% endblock %}
+
+        <script src="/static/jquery-3.6.0.js"></script>
+        <script src="/static/bootstrap-4.5.3-dist/js/bootstrap.js"></script>
+        <script src="/static/fontawesome-free-5.15.4-web/js/all.js"></script>
+        <script>
+            $("#slika").on("change", function (e) {
+                var reader = new FileReader();
+                const file = e.target.files[0];
+                reader.onload = function (e) {
+                    $("#slika_pregled").attr("src", e.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        </script>
+    </body>
+</html>

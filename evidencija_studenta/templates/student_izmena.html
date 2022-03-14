@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Studentska evidencija</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('studenti') }}">Studenti <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('predmeti') }}">Predmeti</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('korisnici') }}" tabindex="-1" aria-disabled="true">Korisnici</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </form>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row justify-content-start">
+                <div class="col-lg-6 cl-xs-12 mb-5">
+                    <form action={{ url_for('student_izmena', id=student.id) }} method="POST" enctype="multipart/form-data">
+                        <legend class="mt-5 mb-5">Izmena studenta</legend>
+                        <div class="form-group">
+                            <label for="">Broj indeksa</label>
+                            <input type="text" id="student_broj_indeksa" class="form-control" name="broj_indeksa" value="{{ student.broj_indeksa }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Ime</label>
+                            <input type="text" id="student_ime" class="form-control" name="ime" value={{ student.ime }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Ime roditelja</label>
+                            <input type="text" id="student_ime_roditelja" class="form-control" value={{ student.ime_roditelja }} name="ime_roditelja" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Prezime</label>
+                            <input type="text" id="student_prezime" class="form-control" name="prezime" value={{ student.prezime }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Email</label>
+                            <input type="email" id="student_email" class="form-control" name="email" value={{ student.email }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Broj telefona</label>
+                            <input type="text" id="student_broj_telefona" class="form-control" name="broj_telefona" value={{ student.broj_telefona }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Godina Studija</label>
+                            <input type="text" id="student_godina_studija" class="form-control" name="godina_studija" value={{ student.godina_studija }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Datum rodjenja</label>
+                            <input type="date" id="student_dat_rodj" class="form-control" name="datum_rodjenja" value={{ student.datum_rodjenja }} required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">JMBG</label>
+                            <input type="text" id="student_jmbg" class="form-control" name="jmbg" value={{ student.jmbg }} required>
+                        </div>
+                        <!-- dodavanje slike -->
+                        <div class="form-group">
+                            <label for="slika">
+                                <img
+                                    {% if student.slika == "" %}
+                                        src="/static/img/placeholder.png"
+                                    {% else %}
+                                        src="/static/uploads/{{ student.slika }}"
+                                    {% endif %}
+                                    id="slika_pregled"
+                                    alt="student"
+                                />
+                            </label>
+                            <label for="slika" class="btn btn-primary">Odaberi sliku</label>
+                            <input type="file" accept="image/*" class="custom-files-input" hidden id="slika" name="slika">
+                        </div>
+                        <input type="submit" class="btn btn-primary" role="button" value="Sacuvaj">
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

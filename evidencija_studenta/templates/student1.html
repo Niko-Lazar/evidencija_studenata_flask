@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Studentska evidencija</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('studenti') }}">Studenti <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% if (rola == 'administrator') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('predmeti') }}">Predmeti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('korisnici') }}" tabindex="-1" aria-disabled="true">Korisnici</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </form>
+            </div>
+        </nav>
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 mt-5">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Ime</th>
+                                    <td>{{ student.ime }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Ime roditelja</th>
+                                    <td>{{ student.ime_roditelja }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Prezime</th>
+                                    <td>{{ student.prezime }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Broj indeksa</th>
+                                    <td>{{ student.broj_indeksa }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Broj telefona</th>
+                                    <td>{{ student.broj_telefona }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Email</th>
+                                    <td>{{ student.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Datum rodjenja</th>
+                                    <td>{{ student.datum_rodjenja }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">JMBG</th>
+                                    <td>{{ student.jmbg }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Ukupno ESPB</th>
+                                    <td>{{ student.espb}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Prosek ocena</th>
+                                    <td>{{ student.prosek_ocena }}</td>
+                                </tr>
+                                {% if (rola == 'administrator') %}
+                                <tr>
+                                    <th scope="row">Akcije</th>
+                                    <td class="">
+                                        <a href={{ url_for("student_izmena", id=student.id) }} role="button" class="text-warning mx-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="icon-btn red mx-1 delete_btn" data-toggle="modal" data-target=#deleteStudent{{ student.id }}>
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% elif (rola == 'student') %}
+                                <tr>
+                                    <th scope="row">Akcije</th>
+                                    <td class="">
+                                        <a href={{ url_for("student_izmena", id=student.id) }} role="button" class="text-warning mx-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="" role="button" class="text-secondary mx-1">
+                                            <i class="fas fa-key"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <!-- SLIKA -->
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        <img 
+                                        {%if student.slika == "" %}
+                                            src="/static/img/placeholder.png"
+                                        {% else %}
+                                            src="/static/uploads/{{ student.slika }}"
+                                        {% endif %} 
+                                        id="slika_pregled"
+                                        alt="student" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                    </div>
+                    {% if (rola != 'student')%}
+                    <div class="col-6 mt-5">
+                        <form action={{ url_for('ocena_nova', id=student.id) }} method="POST">
+                            <div class="form-group">
+                                <label for="">Predmet</label>
+                                <select name="predmet_id" id="predmet" class="custom-select">
+                                    <option value="">Odaberi predmet</option>
+                                    {% for predmet in predmeti %}
+                                    <option value={{ predmet.id }}>{{ predmet.naziv }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Ocena</label>
+                                <input type="text" id="ocena" name="ocena" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Datum</label>
+                                <input type="date" id="datum" name="datum" class="form-control" required>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <input type="submit" class="btn btn-primary" role="button" value="Dodaj ocenu">
+                                <a href={{ url_for('export', tip="student", id=student.id) }} role="button" class="btn btn-success ml-3 mr-3">Export</a>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Sifra</th>
+                                    <th scope="col">Naziv</th>
+                                    <th scope="col">Godina Studija</th>
+                                    <th scope="col">ESPB</th>
+                                    <th scope="col">Obavezni / Izborni</th>
+                                    <th scope="col">Ocena</th>
+                                    {% if (rola == 'administrator') %}
+                                    <th scope="col">Akcije</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for procena in procene %}
+                                    <tr>
+                                        <td>{{ procena.sifra }}</td>
+                                            <td>{{ procena.naziv }}</td>
+                                            <td>{{ procena.godina_studija }}</td>
+                                            <td>{{ procena.espb }}</td>
+                                            <td>{{ procena.obavezni_izborni }}</td>
+                                            <td>{{ procena.ocena }}</td>
+                                                {% if (rola == 'administrator') %}
+                                                <td colspan="2">
+                                                    <a href={{ url_for("predmet_izmena", id=procena.predmet_id) }} role="button" class="text-warning mx-1">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button class="icon-btn red mx-1 delete_btn" data-toggle="modal" data-target=#deleteOcena{{ procena.id }}>
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+
+                                                    {% for ocena in ocene %}
+                                                        {% if (ocena.predmet_id == procena.predmet_id) %}
+                                                            <!-- Modal za brisanje ocene -->
+                                                            <div class="modal fade" id="deleteOcena{{ procena.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    
+                                                                    <div class="modal-body">
+                                                                        Da li ste sigurni da zelite da obrisete ocenu iz predmeta {{procena.naziv}} za studenta {{ student.ime }} {{ student.prezime }}?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+                                                                    <form action={{ url_for("ocena_brisanje", id=ocena.id) }} method="POST">
+                                                                        <button role="button" class="btn btn-danger">Obrisi</button>
+                                                                    </form>
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal za brisanje studenta -->
+            <div class="modal fade" id="deleteStudent{{ student.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    
+                    <div class="modal-body">
+                        Da li ste sigurni da zelite da obrisete studenta {{ student.ime }} {{ student.prezime }}?
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+                    <form action={{ url_for("student_brisanje", id=student.id) }} method="POST">
+                        <button role="button" class="btn btn-danger">Obrisi</button  >
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+    {% endblock %}
+
+
+
+
+

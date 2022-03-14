@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Studentska evidencija</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('studenti') }}">Studenti <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('predmeti') }}">Predmeti</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('korisnici') }}" tabindex="-1" aria-disabled="true">Korisnici</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </form>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row my-5 justify-content-end">
+                <a href="{{ url_for('predmet_novi') }}" role="button" class="btn btn-primary">Dodaj predmet</a>
+                <a href={{ url_for('export', tip="predmeti", id='0') }} role="button" class="btn btn-success ml-3 mr-3">Export</a>
+            </div>
+
+            <div class="row">
+                <table class="table">
+                    <form action="{{ url_for('predmeti') }}" method="GET">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <input value="{{ args.sifra }}" name="sifra" placeholder="Sifra" type="text" class="form-control">
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <input value="{{ args.naziv }}" name="naziv" placeholder="naziv" type="text" class="form-control">
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <select name="godina_studija" class="form-control">
+                                            <option value="">Sve</option>
+                                            <option {% if args.godina_studija == '1' %}selected{% endif %} value="1">1</option>
+                                            <option {% if args.godina_studija == '2' %}selected{% endif %} value="2">2</option>
+                                            <option {% if args.godina_studija == '3' %}selected{% endif %} value="3">3</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <select name="obavezni_izborni" class="form-control">
+                                            <option value="">--</option>
+                                            <option {% if args.obavezni_izborni == 'obavezni' %}selected{% endif %} value="obavezni">Obavezni</option>
+                                            <option {% if args.obavezni_izborni == 'izborni' %}selected{% endif %} value="izborni">Izborni</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th scope="col" colspan="2">
+                                    <div class="inline-btns">
+                                        <button type="submit" class="btn btn-primary btn-sm mr-3">Pretrazi</button>
+                                        <a role="button" class="btn btn-secondary btn-sm" href="{{ url_for('predmeti') }}">Ponisti</a>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">
+                                    <label for="order_by_sifra" class="header-btn">
+                                        Sifra
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'sifra' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'sifra' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_sifra"
+                                    value="sifra"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">
+                                    <label for="order_by_naziv" class="header-btn">
+                                        Naziv
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'naziv' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'naziv' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_naziv"
+                                    value="naziv"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">
+                                    <label for="order_by_godina_studija" class="header-btn">
+                                        Godina Studija
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'godina_studija' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'godina_studija' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_godina_studija"
+                                    value="godina_studija"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">
+                                    <label for="order_by_espb" class="header-btn">
+                                        ESPB
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'espb' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'espb' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_espb"
+                                    value="espb"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">
+                                    <label for="order_by_obavezni_izborni" class="header-btn">
+                                        Obavezni / Izborni
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'obavezni_izborni' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'obavezni_izborni' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_obavezni_izborni"
+                                    value="obavezni_izborni"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">Akcije</th>
+                            </tr>
+                        </thead>
+                        <input name="prethodni_order_by" value="{{ args.order_by }}" hidden />
+                        <input name="order_type" value="{{ order_type }}" hidden />
+                        <input name="page" value="{{ strana }}" hidden />
+                    </form>
+                    <tbody class="table-striped">
+                        {% for predmet in predmeti %}
+                        <tr>
+                            <td>{{ predmet.sifra }}</td>
+                            <td>{{ predmet.naziv }}</td>
+                            <td>{{ predmet.godina_studija }}</td>
+                            <td>{{ predmet.espb }}</td>
+                            <td>{{ predmet.obavezni_izborni }}</td>
+                            <td class="row" style="margin: 0;">
+                                <form action={{ url_for("predmet_izmena", id=predmet.id) }} method="POST">
+                                    <a href={{ url_for("predmet_izmena", id=predmet.id) }} role="button" class="text-warning mx-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </form>
+                                <button class="icon-btn red mx-1 delete_btn" data-toggle="modal" data-target=#deletePredmet{{ predmet.id }}>
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Modal -->
+                        <div class="modal fade" id="deletePredmet{{ predmet.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    Da li ste sigurni da zelite da obrisete predmet {{ predmet.naziv }}?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+                                <form action={{ url_for("predmet_brisanje", id=predmet.id) }} method="POST">
+                                    <button role="button" class="btn btn-danger">Obrisi</button  >
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+            </div>
+            <nav>
+                <ul class="pagination justify-content-center mt-3">
+                    <li class="page-item {% if strana == '1' %} disabled {% endif %}">
+                        <a class="page-link" href="{{ prethodna_strana }}">Prethodna</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">
+                            {{strana}}
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ sledeca_strana }}">Sledeca</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    {% endblock %}

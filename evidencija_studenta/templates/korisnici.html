@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Studentska evidencija</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('studenti') }}">Studenti <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('predmeti') }}">Predmeti</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('korisnici') }}" tabindex="-1" aria-disabled="true">Korisnici</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </form>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row my-5 justify-content-end">
+                <a href="{{ url_for('korisnik_novi') }}" role="button" class="btn btn-primary">Dodaj korisnika</a>
+                <a href={{ url_for('export', tip="korisnici", id='0') }} role="button" class="btn btn-success ml-3 mr-3">Export</a>
+            </div>
+
+            <div class="row">
+                <table class="table">
+                    <form action="{{ url_for('korisnici') }}" method="GET">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <input value="{{ args.ime }}" name="ime" placeholder="Ime" type="text" class="form-control">
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <input value="{{ args.prezime }}" name="prezime" placeholder="Prezime" type="text" class="form-control">
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="input-group input-group-sm">
+                                        <select name="rola" class="form-control">
+                                            <option value="">Rola</option>
+                                            <option {% if args.rola == "profesor" %}selected{% endif %} value="profesor">Profesor</option>
+                                            <option {% if args.rola == "administrator" %}selected{% endif %} value="administrator">Administrator</option>
+                                            <option {% if args.rola == "student" %}selected{% endif %} value="student">Student</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th scope="col" colspan="2">
+                                    <div class="inline-btns">
+                                        <button type="submit" class="btn btn-primary btn-sm mr-3">Pretrazi</button>
+                                        <a role="button" class="btn btn-secondary btn-sm" href="{{ url_for('korisnici') }}">Ponisti</a>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">
+                                    <label for="order_by_ime" class="header-btn">
+                                        Ime
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'ime' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'ime' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_ime"
+                                    value="ime"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">
+                                    <label for="order_by_prezime" class="header-btn">
+                                        Prezime
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'prezime' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'prezime' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_prezime"
+                                    value="prezime"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">
+                                    <label for="order_by_email" class="header-btn">
+                                        Email
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'email' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'email' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_email"
+                                    value="email"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th>
+                                    <label for="order_by_rola" class="header-btn">
+                                        Rola
+                                    </label>
+                                    {% if order_type == 'asc' and args.order_by == 'rola' %}
+                                        <i class="fas fa-sort-up"></i>
+                                        {% elif order_type == 'desc' and args.order_by == 'rola' %}
+                                            <i class="fas fa-sort-down"></i>
+                                            {% else %}
+                                                <i class="fas fa-sort light-icon"></i>
+                                    {% endif %}
+                                    <input style="display: none;"
+                                    id="order_by_rola"
+                                    value="rola"
+                                    class="header-btn"
+                                    type="submit"
+                                    name="order_by"
+                                    />
+                                </th>
+                                <th scope="col">Akcija</th>
+                            </tr>
+                        </thead>
+                        <input name="prethodni_order_by" value="{{ args.order_by }}" hidden />
+                        <input name="order_type" value="{{ order_type }}" hidden />
+                        <input name="page" value="{{ strana }}" hidden />
+                    </form>
+                    <tbody>
+                        {% for korisnik in korisnici %}
+                        <tr>
+                            <td>{{ korisnik.ime }}</td>
+                            <td>{{ korisnik.prezime }}</td>
+                            <td>{{ korisnik.email }}</td>
+                            <td>{{ korisnik.rola }}</td>
+                            <td class="row" style="margin: 0;">
+                                <form action={{ url_for("korisnik_izmena", id=korisnik.id) }} method="POST">
+                                    <a href={{ url_for("korisnik_izmena", id=korisnik.id) }} role="button" class="text-warning mx-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </form>
+                                <button class="icon-btn red mx-1 delete_btn" data-toggle="modal" data-target=#deleteKorisnika{{ korisnik.id }}>
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteKorisnika{{ korisnik.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    Da li ste sigurni da zelite da obrisete korisnika {{ korisnik.ime }} {{ korisnik.prezime }}?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+                                <form action={{ url_for("korisnik_brisanje", id=korisnik.id) }} method="POST">
+                                    <button role="button" class="btn btn-danger">Obrisi</button  >
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+            </div>
+            <nav>
+                <ul class="pagination justify-content-center mt-3">
+                    <li class="page-item {% if strana == '1' %} disabled {% endif %}">
+                        <a class="page-link" href="{{ prethodna_strana }}">Prethodna</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">
+                            {{strana}}
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ sledeca_strana }}">Sledeca</a>
+                    </li>
+                </ul>
+            </nav>
+            
+        </div>
+    {% endblock %}

@@ -1,0 +1,26 @@
+.delete_btn {
+    background-color: transparent;
+    border: none;
+    color: rgb(255, 0, 0);
+    
+}
+
+.delete_btn:hover{
+    color: rgb(114, 0, 0);
+}
+
+.delete_btn:focus{
+    outline: none;
+}
+
+#slika_pregled {
+    height: 150px;
+    width: 150px;
+    border-radius: 150px;
+    background-color: #999999;
+    object-fit: cover;
+}
+
+label.header-btn {
+    cursor: pointer;
+}
