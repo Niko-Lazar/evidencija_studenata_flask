@@ -26,8 +26,8 @@ app.secret_key = "tajni_kljuc_aplikacije" # koji nije toliko tajni
 
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
-app.config["MAIL_USERNAME"] = "web.programiranje.rer0119@gmail.com"
-app.config["MAIL_PASSWORD"] = "webprogramiranjerer0119"
+app.config["MAIL_USERNAME"] = ""
+app.config["MAIL_PASSWORD"] = ""
 app.config["MAIL_USE_TLS"] = False
 app.config["MAIL_USE_SSL"] = True
 mail = Mail(app)
